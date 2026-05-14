@@ -17,28 +17,42 @@
     --white: #fff5f7;
   }
 
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+
   body {
+    height: 100%;
+    max-height: 100dvh;
+    overflow: hidden;
     background: var(--deep);
     font-family: 'Lato', sans-serif;
     color: var(--white);
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
+    touch-action: none; /* bloqueia scroll por toque no mobile */
   }
 
   h1 {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
     color: var(--blush);
     letter-spacing: .06em;
-    margin-bottom: 1.2rem;
+    margin-bottom: .9rem;
     text-align: center;
   }
 
-  #pips { display: flex; gap: .5rem; margin-bottom: .8rem; }
+  #pips-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .3rem;
+    margin-bottom: .7rem;
+  }
+
   .pip {
     width: 10px; height: 10px; border-radius: 50%;
     background: #5a2535; border: 1.5px solid #8a3545;
@@ -46,22 +60,19 @@
   }
   .pip.done { background: var(--rose); border-color: var(--rose); }
 
-  #scoreboard { display: none; }
-
   #status {
-    font-size: .95rem; color: var(--blush);
-    margin-bottom: 1rem; min-height: 1.3rem;
+    font-size: .9rem; color: var(--blush);
+    margin-bottom: .85rem; min-height: 1.2rem;
     letter-spacing: .04em; text-align: center;
   }
 
-  #board-wrap { width: min(300px, 80vw); }
+  #board-wrap { width: min(280px, 78vw); }
   #board {
     display: grid;
     grid-template-columns: repeat(3,1fr);
-    gap: 8px;
+    gap: 7px;
   }
 
-  /* As células não têm font-size — os spans internos controlam tudo */
   .cell {
     aspect-ratio: 1;
     background: var(--card);
@@ -73,11 +84,13 @@
     user-select: none;
     overflow: hidden;
   }
-  .cell:hover:not(.taken) {
+  .cell:hover:not(.taken):not(.locked) {
     background: #3d1520;
     border-color: var(--rose);
     transform: scale(1.04);
   }
+  /* bloqueado após fim do jogo */
+  .cell.locked { cursor: default; pointer-events: none; }
   .cell.taken  { cursor: default; }
   .cell.win-cell {
     background: #5a0f22;
@@ -89,12 +102,12 @@
   .mark {
     display: flex; align-items: center; justify-content: center;
     width: 100%; height: 100%;
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     line-height: 1;
     animation: pop .25s cubic-bezier(.175,.885,.32,1.275);
   }
-  .mark.x { font-size: 2.6rem; }
-  .mark.o { font-size: 5.0rem; }
+  .mark.x { font-size: 2.5rem; }
+  .mark.o { font-size: 4.8rem; }
   @keyframes pop {
     0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
     100% { transform: scale(1)  rotate(0deg);  opacity: 1; }
@@ -102,14 +115,14 @@
 
   #btn-restart {
     display: none;
-    margin-top: 1.4rem;
-    padding: .55rem 1.5rem;
+    margin-top: 1.2rem;
+    padding: .5rem 1.4rem;
     background: transparent;
     border: 1.5px solid var(--rose);
     color: var(--rose);
     border-radius: 50px;
     font-family: 'Lato', sans-serif;
-    font-size: .82rem;
+    font-size: .8rem;
     letter-spacing: .12em;
     text-transform: uppercase;
     cursor: pointer;
@@ -130,27 +143,27 @@
 
   .love-box {
     text-align: center;
-    padding: 2rem 2.2rem 2.2rem;
+    padding: 1.8rem 2rem 2rem;
     background: var(--card);
     border: 1.5px solid #7a2540;
     border-radius: 20px;
-    max-width: 400px;
+    max-width: 380px;
     width: 90vw;
   }
 
   .love-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+    font-size: clamp(1rem, 3.5vw, 1.5rem);
     color: var(--blush);
-    margin-bottom: 1rem;
+    margin-bottom: .9rem;
   }
 
   #love-board {
     display: grid;
     grid-template-columns: repeat(3,1fr);
     gap: 7px;
-    width: min(230px, 68vw);
-    margin: 0 auto 1.2rem;
+    width: min(220px, 65vw);
+    margin: 0 auto 1rem;
   }
   .love-cell {
     aspect-ratio: 1;
@@ -175,8 +188,8 @@
     animation: heartPop .4s cubic-bezier(.175,.885,.32,1.275) forwards;
     opacity: 0;
   }
-  .love-mark.x { font-size: 1.6rem; }
-  .love-mark.h { font-size: 2.4rem; }
+  .love-mark.x { font-size: 1.5rem; }
+  .love-mark.h { font-size: 2.2rem; }
   @keyframes heartPop {
     0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
     70%  { transform: scale(1.3) rotate(5deg);  opacity: 1; }
@@ -185,8 +198,7 @@
 
   #love-message {
     font-family: 'Playfair Display', serif;
-    font-style: normal;
-    font-size: clamp(1rem, 3vw, 1.25rem);
+    font-size: clamp(.95rem, 3vw, 1.2rem);
     color: var(--gold);
     line-height: 1.6;
     opacity: 0;
@@ -198,7 +210,7 @@
 
   #btn-close {
     display: none;
-    margin-top: 1.2rem;
+    margin-top: 1rem;
     padding: .5rem 1.4rem;
     background: transparent;
     border: 1.5px solid var(--rose);
@@ -230,7 +242,7 @@
 
 <h1>Jogo da Velha</h1>
 
-<div id="pips-wrap" style="display:flex;flex-direction:column;align-items:center;gap:.35rem;margin-bottom:.8rem;">
+<div id="pips-wrap">
   <div style="display:flex;align-items:center;gap:.5rem;">
     <span style="font-size:.7rem;color:#b07080;letter-spacing:.08em;width:40px;text-align:right;">J1 x</span>
     <div style="display:flex;gap:.4rem;">
@@ -297,13 +309,18 @@ const WINS_TO_TRIGGER = 3;
 let board, turn, gameOver;
 let scoreX = 0, scoreO = 0, roundNum = 1;
 
+function lockAllCells() {
+  document.querySelectorAll('.cell').forEach(c => c.classList.add('locked'));
+}
+
 function init() {
   board    = Array(9).fill(null);
   turn     = 'X';
   gameOver = false;
+  document.getElementById('board').style.pointerEvents = ''; // restaura cliques
   document.querySelectorAll('.cell').forEach(c => {
     c.innerHTML = '';
-    c.classList.remove('taken','win-cell');
+    c.classList.remove('taken','win-cell','locked');
   });
   setStatus('Vez do Jogador 1 x');
   document.getElementById('btn-restart').style.display = 'none';
@@ -323,7 +340,7 @@ init();
 
 document.getElementById('board').addEventListener('click', e => {
   const cell = e.target.closest('.cell');
-  if (!cell || gameOver || cell.classList.contains('taken')) return;
+  if (!cell || gameOver || cell.classList.contains('taken') || cell.classList.contains('locked')) return;
   play(+cell.dataset.i);
 });
 
@@ -352,6 +369,9 @@ function checkWin(mark) {
 
 function endRound(winner, line) {
   gameOver = true;
+  lockAllCells(); // bloqueia todos os quadrados imediatamente
+  document.getElementById('board').style.pointerEvents = 'none'; // garantia extra
+
   if (winner === 'X') scoreX++;
   if (winner === 'O') scoreO++;
   roundNum++;
@@ -364,7 +384,6 @@ function endRound(winner, line) {
   else if (winner === 'O') setStatus('Jogador 2 venceu essa rodada!');
   else                     setStatus('Empate!');
 
-  // Dispara overlay ao chegar em 3 vitórias
   if (scoreX >= WINS_TO_TRIGGER || scoreO >= WINS_TO_TRIGGER) {
     if (!loveShown) {
       setTimeout(showLoveOverlay, 1600);
@@ -385,23 +404,6 @@ document.getElementById('btn-restart').addEventListener('click', () => {
 });
 
 // ── TABULEIRO DO AMOR ─────────────────────────────────────────────
-// Simula um jogo real onde ♥ e ✕ se alternam e ♥ ganha na diagonal
-// Sequência de jogadas: (posição, símbolo)
-// ♥ começa, ✕ responde — ♥ ganha com 0,4,8
-const LOVE_MOVES = [
-  { i: 4, s: '♥' },  // ♥ centro
-  { i: 0, s: '✕' },  // ✕ canto
-  { i: 2, s: '♥' },  // ♥ canto
-  { i: 6, s: '✕' },  // ✕ canto oposto
-  { i: 1, s: '✕' },  // ✕ lateral — tentando bloquear... mas tarde demais
-  { i: 8, s: '♥' },  // ♥ fecha a diagonal 2-4-... não, usa 0? vamos usar outra
-  // Na verdade a linha vencedora é [2,4,6]: 2✕ não, vamos garantir 0,4,8
-  // Redefino abaixo com sequência limpa
-];
-
-// Sequência limpa: ♥ joga 4, ✕ joga 0, ♥ joga 8, ✕ joga 2, ♥ joga 6 → espera, 4+8+6 não é linha
-// Linha [0,4,8]: ♥ precisa de 0,4,8
-// ♥: 4, ✕: 2, ♥: 0, ✕: 6, ♥: 3 (blefe), ✕: 1, ♥: 8 → ♥ ganha com 0,4,8 ✓
 const LOVE_SEQUENCE = [
   { i: 4, s: '♥' },
   { i: 2, s: '✕' },
@@ -409,7 +411,7 @@ const LOVE_SEQUENCE = [
   { i: 6, s: '✕' },
   { i: 3, s: '♥' },
   { i: 1, s: '✕' },
-  { i: 8, s: '♥' },  // ← ♥ vence com 0,4,8
+  { i: 8, s: '♥' },
 ];
 const LOVE_WIN_LINE = [0, 4, 8];
 
@@ -437,7 +439,6 @@ function showLoveOverlay() {
       div.textContent = s;
       cell.appendChild(div);
 
-      // Última jogada — ♥ venceu
       if (step === LOVE_SEQUENCE.length - 1) {
         setTimeout(() => {
           LOVE_WIN_LINE.forEach(wi =>
@@ -479,6 +480,10 @@ document.getElementById('btn-close').addEventListener('click', () => {
   scoreX = 0; scoreO = 0; roundNum = 1;
   refreshUI(); init();
 });
+</script>
+<script>
+  // Bloqueia scroll por toque em todo o documento
+  document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 </script>
 </body>
 </html>
