@@ -17,10 +17,7 @@
     --white: #fff5f7;
   }
 
-  html {
-    height: 100%;
-    overflow: hidden;
-  }
+  html { height: 100%; overflow: hidden; }
 
   body {
     height: 100%;
@@ -33,39 +30,86 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    touch-action: none; /* bloqueia scroll por toque no mobile */
+    gap: 1rem;
+    touch-action: none;
   }
 
-  h1 {
+  /* STATUS */
+  #status {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-size: clamp(.95rem, 3vw, 1.15rem);
     color: var(--blush);
-    letter-spacing: .06em;
-    margin-bottom: .9rem;
+    letter-spacing: .05em;
     text-align: center;
+    min-height: 1.4rem;
   }
 
-  #pips-wrap {
+  /* SCOREBOARD */
+  #scoreboard {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: .3rem;
-    margin-bottom: .7rem;
+    gap: 8px;
+    width: min(280px, 78vw);
   }
 
+  .score-card {
+    flex: 1;
+    background: var(--card);
+    border: 1.5px solid #5a2535;
+    border-radius: 12px;
+    padding: .5rem .55rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    transition: border-color .3s, background .3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-card.active {
+    border-color: var(--rose);
+    background: #35101e;
+  }
+  .score-card.active::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--rose);
+    border-radius: 12px 0 0 12px;
+  }
+
+  .score-icon { width: 24px; height: 24px; flex-shrink: 0; }
+  .score-icon svg { width: 100%; height: 100%; display: block; }
+
+  .score-info { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+
+  .score-label {
+    font-size: .5rem;
+    color: #b07080;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .score-card.active .score-label { color: var(--blush); }
+
+  .score-pips { display: flex; gap: 4px; }
   .pip {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: #5a2535; border: 1.5px solid #8a3545;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #5a2535; border: 1px solid #8a3545;
     transition: background .3s;
   }
   .pip.done { background: var(--rose); border-color: var(--rose); }
 
-  #status {
-    font-size: .9rem; color: var(--blush);
-    margin-bottom: .85rem; min-height: 1.2rem;
-    letter-spacing: .04em; text-align: center;
+  .score-vs {
+    font-family: 'Playfair Display', serif;
+    font-size: .7rem;
+    color: #7a3545;
+    letter-spacing: .06em;
+    flex-shrink: 0;
   }
 
+  /* BOARD */
   #board-wrap { width: min(280px, 78vw); }
   #board {
     display: grid;
@@ -83,15 +127,15 @@
     transition: background .15s, transform .1s, border-color .15s;
     user-select: none;
     overflow: hidden;
+    position: relative;
   }
   .cell:hover:not(.taken):not(.locked) {
     background: #3d1520;
     border-color: var(--rose);
     transform: scale(1.04);
   }
-  /* bloqueado após fim do jogo */
-  .cell.locked { cursor: default; pointer-events: none; }
-  .cell.taken  { cursor: default; }
+  .cell.locked  { cursor: default; pointer-events: none; }
+  .cell.taken   { cursor: default; }
   .cell.win-cell {
     background: #5a0f22;
     border-color: var(--gold);
@@ -100,29 +144,28 @@
   @keyframes pulse-cell { to { box-shadow: 0 0 18px var(--rose); } }
 
   .mark {
+    position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    width: 100%; height: 100%;
-    font-size: 2.5rem;
-    line-height: 1;
-    animation: pop .25s cubic-bezier(.175,.885,.32,1.275);
+    animation: pop .28s cubic-bezier(.175,.885,.32,1.275) forwards;
   }
-  .mark.x { font-size: 2.5rem; }
-  .mark.o { font-size: 4.8rem; }
   @keyframes pop {
-    0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
-    100% { transform: scale(1)  rotate(0deg);  opacity: 1; }
+    0%   { transform: scale(0) rotate(-18deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg);   opacity: 1; }
   }
+  .mark svg { width: 54%; height: 54%; display: block; }
+  .mark-x line { stroke: var(--rose); stroke-width: 8; stroke-linecap: round; }
+  .mark-o circle { fill: none; stroke: var(--blush); stroke-width: 7; stroke-linecap: round; }
 
+  /* BUTTON */
   #btn-restart {
     display: none;
-    margin-top: 1.2rem;
-    padding: .5rem 1.4rem;
+    padding: .45rem 1.3rem;
     background: transparent;
     border: 1.5px solid var(--rose);
     color: var(--rose);
     border-radius: 50px;
     font-family: 'Lato', sans-serif;
-    font-size: .8rem;
+    font-size: .78rem;
     letter-spacing: .12em;
     text-transform: uppercase;
     cursor: pointer;
@@ -150,14 +193,12 @@
     max-width: 380px;
     width: 90vw;
   }
-
   .love-title {
     font-family: 'Playfair Display', serif;
     font-size: clamp(1rem, 3.5vw, 1.5rem);
     color: var(--blush);
     margin-bottom: .9rem;
   }
-
   #love-board {
     display: grid;
     grid-template-columns: repeat(3,1fr);
@@ -171,43 +212,37 @@
     border: 1.5px solid #6a2535;
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
+    overflow: hidden; position: relative;
     transition: background .2s;
   }
   .love-cell.filled   { background: #3d0f1e; border-color: var(--rose); }
   .love-cell.win-love {
-    background: #6a0f28;
-    border-color: var(--gold);
+    background: #6a0f28; border-color: var(--gold);
     animation: pulse-cell .5s ease infinite alternate;
   }
-
   .love-mark {
+    position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    width: 100%; height: 100%;
-    line-height: 1;
     animation: heartPop .4s cubic-bezier(.175,.885,.32,1.275) forwards;
     opacity: 0;
   }
-  .love-mark.x { font-size: 1.5rem; }
-  .love-mark.h { font-size: 2.2rem; }
+  .love-mark svg { width: 55%; height: 55%; display: block; }
+  .love-mark.x-love line { stroke: var(--rose); stroke-width: 9; stroke-linecap: round; }
+  .love-mark.h-love path { fill: var(--rose); }
   @keyframes heartPop {
     0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
-    70%  { transform: scale(1.3) rotate(5deg);  opacity: 1; }
-    100% { transform: scale(1)  rotate(0deg);   opacity: 1; }
+    70%  { transform: scale(1.25) rotate(4deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg);   opacity: 1; }
   }
-
   #love-message {
     font-family: 'Playfair Display', serif;
     font-size: clamp(.95rem, 3vw, 1.2rem);
-    color: var(--gold);
-    line-height: 1.6;
-    opacity: 0;
-    transform: translateY(12px);
+    color: var(--gold); line-height: 1.6;
+    opacity: 0; transform: translateY(12px);
     transition: opacity .7s .1s, transform .7s .1s;
     margin-top: .4rem;
   }
   #love-message.show { opacity: 1; transform: translateY(0); }
-
   #btn-close {
     display: none;
     margin-top: 1rem;
@@ -226,42 +261,56 @@
   #btn-close:hover { background: var(--rose); color: var(--white); }
 
   .burst-heart {
-    position: fixed;
-    font-size: 1.4rem;
-    pointer-events: none;
-    z-index: 200;
+    position: fixed; font-size: 1.4rem;
+    pointer-events: none; z-index: 200;
     animation: burst 1.4s ease-out forwards;
   }
   @keyframes burst {
-    0%   { transform: translate(0,0) scale(1);                  opacity: 1; }
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
     100% { transform: translate(var(--dx),var(--dy)) scale(.2); opacity: 0; }
   }
 </style>
 </head>
 <body>
 
-<h1>Jogo da Velha</h1>
+<div id="status">Vez do Jogador 1</div>
 
-<div id="pips-wrap">
-  <div style="display:flex;align-items:center;gap:.5rem;">
-    <span style="font-size:.7rem;color:#b07080;letter-spacing:.08em;width:40px;text-align:right;">J1 x</span>
-    <div style="display:flex;gap:.4rem;">
-      <div class="pip" id="px0"></div>
-      <div class="pip" id="px1"></div>
-      <div class="pip" id="px2"></div>
+<div id="scoreboard">
+  <div class="score-card active" id="card-x">
+    <div class="score-icon">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <line x1="18" y1="18" x2="82" y2="82" stroke="#e8506a" stroke-width="14" stroke-linecap="round"/>
+        <line x1="82" y1="18" x2="18" y2="82" stroke="#e8506a" stroke-width="14" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="score-info">
+      <div class="score-label">Jogador 1</div>
+      <div class="score-pips">
+        <div class="pip" id="px0"></div>
+        <div class="pip" id="px1"></div>
+        <div class="pip" id="px2"></div>
+      </div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:.5rem;">
-    <span style="font-size:.7rem;color:#b07080;letter-spacing:.08em;width:40px;text-align:right;">J2 ○</span>
-    <div style="display:flex;gap:.4rem;">
-      <div class="pip" id="po0"></div>
-      <div class="pip" id="po1"></div>
-      <div class="pip" id="po2"></div>
+
+  <div class="score-vs">vs</div>
+
+  <div class="score-card" id="card-o">
+    <div class="score-icon">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="34" fill="none" stroke="#f9c0cb" stroke-width="13" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="score-info">
+      <div class="score-label">Jogador 2</div>
+      <div class="score-pips">
+        <div class="pip" id="po0"></div>
+        <div class="pip" id="po1"></div>
+        <div class="pip" id="po2"></div>
+      </div>
     </div>
   </div>
 </div>
-
-<div id="status">Vez do Jogador 1 x</div>
 
 <div id="board-wrap">
   <div id="board">
@@ -299,13 +348,33 @@
 </div>
 
 <script>
+function svgX() {
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/>
+  </svg>`;
+}
+function svgO() {
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="33"/>
+  </svg>`;
+}
+function svgHeart() {
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 82 C50 82 15 58 15 35 C15 22 25 14 35 14 C42 14 48 18 50 22 C52 18 58 14 65 14 C75 14 85 22 85 35 C85 58 50 82 50 82Z"/>
+  </svg>`;
+}
+function svgXLove() {
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/>
+  </svg>`;
+}
+
 const WIN_LINES = [
   [0,1,2],[3,4,5],[6,7,8],
   [0,3,6],[1,4,7],[2,5,8],
   [0,4,8],[2,4,6]
 ];
 const WINS_TO_TRIGGER = 3;
-
 let board, turn, gameOver;
 let scoreX = 0, scoreO = 0, roundNum = 1;
 
@@ -314,15 +383,15 @@ function lockAllCells() {
 }
 
 function init() {
-  board    = Array(9).fill(null);
-  turn     = 'X';
+  board = Array(9).fill(null);
+  turn = 'X';
   gameOver = false;
-  document.getElementById('board').style.pointerEvents = ''; // restaura cliques
+  document.getElementById('board').style.pointerEvents = '';
   document.querySelectorAll('.cell').forEach(c => {
     c.innerHTML = '';
     c.classList.remove('taken','win-cell','locked');
   });
-  setStatus('Vez do Jogador 1 x');
+  setStatus('Vez do Jogador 1');
   document.getElementById('btn-restart').style.display = 'none';
   refreshUI();
 }
@@ -332,6 +401,8 @@ function refreshUI() {
     document.getElementById('px'+i).classList.toggle('done', i < scoreX);
   for (let i = 0; i < WINS_TO_TRIGGER; i++)
     document.getElementById('po'+i).classList.toggle('done', i < scoreO);
+  document.getElementById('card-x').classList.toggle('active', turn === 'X');
+  document.getElementById('card-o').classList.toggle('active', turn === 'O');
 }
 
 function setStatus(txt) { document.getElementById('status').textContent = txt; }
@@ -349,8 +420,8 @@ function play(i) {
   const cell = document.querySelector(`.cell[data-i="${i}"]`);
   cell.classList.add('taken');
   const div = document.createElement('div');
-  div.className = turn === 'X' ? 'mark x' : 'mark o';
-  div.textContent = turn === 'X' ? 'x' : '○';
+  if (turn === 'X') { div.className = 'mark mark-x'; div.innerHTML = svgX(); }
+  else              { div.className = 'mark mark-o'; div.innerHTML = svgO(); }
   cell.appendChild(div);
 
   const winLine = checkWin(turn);
@@ -358,7 +429,8 @@ function play(i) {
   if (board.every(v => v)) { endRound(null, null);    return; }
 
   turn = turn === 'X' ? 'O' : 'X';
-  setStatus(turn === 'X' ? 'Vez do Jogador 1 x' : 'Vez do Jogador 2 ○');
+  setStatus(turn === 'X' ? 'Vez do Jogador 1' : 'Vez do Jogador 2');
+  refreshUI();
 }
 
 function checkWin(mark) {
@@ -369,27 +441,23 @@ function checkWin(mark) {
 
 function endRound(winner, line) {
   gameOver = true;
-  lockAllCells(); // bloqueia todos os quadrados imediatamente
-  document.getElementById('board').style.pointerEvents = 'none'; // garantia extra
-
+  lockAllCells();
+  document.getElementById('board').style.pointerEvents = 'none';
   if (winner === 'X') scoreX++;
   if (winner === 'O') scoreO++;
   roundNum++;
   refreshUI();
-
   if (line) line.forEach(i =>
     document.querySelector(`.cell[data-i="${i}"]`).classList.add('win-cell'));
-
   if (winner === 'X')      setStatus('Jogador 1 venceu essa rodada!');
   else if (winner === 'O') setStatus('Jogador 2 venceu essa rodada!');
   else                     setStatus('Empate!');
-
   if (scoreX >= WINS_TO_TRIGGER || scoreO >= WINS_TO_TRIGGER) {
     if (!loveShown) {
       setTimeout(showLoveOverlay, 1600);
     } else {
-      const champ = scoreX >= WINS_TO_TRIGGER ? 'Jogador 1 x' : 'Jogador 2 ○';
-      setStatus(`🏆 ${champ} venceu o campeonato!`);
+      const champ = scoreX >= WINS_TO_TRIGGER ? 'Jogador 1' : 'Jogador 2';
+      setStatus(`${champ} venceu o campeonato! 🏆`);
       scoreX = 0; scoreO = 0; roundNum = 1;
       refreshUI();
       document.getElementById('btn-restart').style.display = 'inline-block';
@@ -399,46 +467,33 @@ function endRound(winner, line) {
   }
 }
 
-document.getElementById('btn-restart').addEventListener('click', () => {
-  init();
-});
+document.getElementById('btn-restart').addEventListener('click', () => { init(); });
 
-// ── TABULEIRO DO AMOR ─────────────────────────────────────────────
 const LOVE_SEQUENCE = [
-  { i: 4, s: '♥' },
-  { i: 2, s: '✕' },
-  { i: 0, s: '♥' },
-  { i: 6, s: '✕' },
-  { i: 3, s: '♥' },
-  { i: 1, s: '✕' },
-  { i: 8, s: '♥' },
+  { i: 4, s: 'h' }, { i: 2, s: 'x' }, { i: 0, s: 'h' },
+  { i: 6, s: 'x' }, { i: 3, s: 'h' }, { i: 1, s: 'x' }, { i: 8, s: 'h' },
 ];
 const LOVE_WIN_LINE = [0, 4, 8];
-
 let loveShown = false;
 
 function showLoveOverlay() {
   if (loveShown) return;
   loveShown = true;
   document.querySelectorAll('.love-cell').forEach(c => {
-    c.innerHTML = '';
-    c.classList.remove('filled','win-love');
+    c.innerHTML = ''; c.classList.remove('filled','win-love');
   });
   const msg = document.getElementById('love-message');
-  msg.classList.remove('show');
-  msg.innerHTML = '';
+  msg.classList.remove('show'); msg.innerHTML = '';
   document.getElementById('btn-close').style.display = 'none';
   document.getElementById('overlay').classList.add('show');
-
   LOVE_SEQUENCE.forEach(({ i, s }, step) => {
     setTimeout(() => {
       const cell = document.querySelector(`.love-cell[data-li="${i}"]`);
       cell.classList.add('filled');
       const div = document.createElement('div');
-      div.className = s === '✕' ? 'love-mark x' : 'love-mark h';
-      div.textContent = s;
+      if (s === 'x') { div.className = 'love-mark x-love'; div.innerHTML = svgXLove(); }
+      else           { div.className = 'love-mark h-love';  div.innerHTML = svgHeart(); }
       cell.appendChild(div);
-
       if (step === LOVE_SEQUENCE.length - 1) {
         setTimeout(() => {
           LOVE_WIN_LINE.forEach(wi =>
@@ -482,7 +537,6 @@ document.getElementById('btn-close').addEventListener('click', () => {
 });
 </script>
 <script>
-  // Bloqueia scroll por toque em todo o documento
   document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 </script>
 </body>
