@@ -457,7 +457,7 @@ function endRound(winner, line) {
       setTimeout(showLoveOverlay, 1600);
     } else {
       const champ = scoreX >= WINS_TO_TRIGGER ? 'Jogador 1' : 'Jogador 2';
-      setStatus(`${champ} venceu o campeonato! 🏆`);
+      setStatus(`${champ} venceu o jogo!`);
       scoreX = 0; scoreO = 0; roundNum = 1;
       refreshUI();
       document.getElementById('btn-restart').style.display = 'inline-block';
